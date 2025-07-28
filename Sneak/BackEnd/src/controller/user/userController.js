@@ -1,11 +1,19 @@
 import { User } from '../../models/index.js'
-
+import bcrypt from 'bcrypt';
 
 /**
  *  fetch all users
  */
 const getAll = async (req, res) => {
     try {
+        // Check if user is admin
+        if (!req.user || (!req.user.role || req.user.role !== 'admin') && !req.user.isAdmin) {
+            return res.status(403).json({
+                success: false,
+                message: "Access denied. Admin privileges required."
+            });
+        }
+        
         //fetching all the data from users table
         const users = await User.findAll();
         res.status(200).send({ data: users, message: "successfully fetched data" })
@@ -25,16 +33,22 @@ const create = async (req, res) => {
         console.log(req.body)
         //validation
         if (!body?.email || !body?.name || !body?.password)
-            return res.status(500).send({ message: "Invalid paylod" });
-        const users = await User.create({
+            return res.status(400).send({ message: "Invalid payload" });
+        const existingUser = await User.findOne({ where: { email: body.email } });
+        if (existingUser) {
+            return res.status(400).send({ message: "Email already registered" });
+        }
+        const hashedPassword = await bcrypt.hash(body.password, 10);
+        const user = await User.create({
             name: body.name,
             email: body.email,
-            password: body.password
+            password: hashedPassword,
+            role: body.role || 'user'
         });
-        res.status(201).send({ data: users, message: "successfully created user" })
+        res.status(201).send({ data: user, message: "successfully created user" })
     } catch (e) {
         console.log(e)
-        res.status(500).json({ error: 'Failed to fetch users' });
+        res.status(500).json({ error: 'Failed to create user' });
     }
 }
 
@@ -51,13 +65,20 @@ const update = async (req, res) => {
         //checking if user exist or not
         const oldUser = await User.findOne({ where: { id } })
         if (!oldUser) {
-            return res.status(500).send({ message: "User not found" });
+            return res.status(404).send({ message: "User not found" });
         }
+        
+        // Hash password if provided
+        let hashedPassword = oldUser.password;
+        if (body.password) {
+            hashedPassword = await bcrypt.hash(body.password, 10);
+        }
+        
         oldUser.name = body.name;
-        oldUser.password = body.password || oldUser.password;
+        oldUser.password = hashedPassword;
         oldUser.email = body.email
         oldUser.save();
-        res.status(201).send({ data: oldUser, message: "user updated successfully" })
+        res.status(200).send({ data: oldUser, message: "user updated successfully" })
     } catch (e) {
         console.log(e)
         res.status(500).json({ error: 'Failed to update users' });
@@ -67,7 +88,7 @@ const update = async (req, res) => {
 /**
  *  delete user 
  */
-const delelteById = async (req, res) => {
+const deleteById = async (req, res) => {
 
     try {
         const { id = null } = req.params;
@@ -75,12 +96,23 @@ const delelteById = async (req, res) => {
 
         //checking if user exist or not
         if (!oldUser) {
-            return res.status(500).send({ message: "User not found" });
+            return res.status(404).send({ message: "User not found" });
         }
+
+        // Prevent deleting admin users
+        if (oldUser.role === 'admin') {
+            return res.status(403).send({ message: "Cannot delete admin users" });
+        }
+
+        // Prevent deleting the default admin user
+        if (oldUser.email === 'sushantdhakal@gmail.com') {
+            return res.status(403).send({ message: "Cannot delete the default admin user" });
+        }
+
         oldUser.destroy();
-        res.status(201).send({ message: "user deleted successfully" })
+        res.status(200).send({ message: "user deleted successfully" });
     } catch (e) {
-        res.status(500).json({ error: 'Failed to fetch users' });
+        res.status(500).json({ error: 'Failed to delete user' });
     }
 }
 
@@ -93,11 +125,11 @@ const getById = async (req, res) => {
         const { id = null } = req.params;
         const user = await User.findOne({ where: { id } })
         if (!user) {
-            return res.status(500).send({ message: "User not found" });
+            return res.status(404).send({ message: "User not found" });
         }
-        res.status(201).send({ message: "user fetched successfully", data: user })
+        res.status(200).send({ message: "user fetched successfully", data: user })
     } catch (e) {
-        res.status(500).json({ error: 'Failed to fetch users' });
+        res.status(500).json({ error: 'Failed to fetch user' });
     }
 }
 
@@ -106,6 +138,6 @@ export const userController = {
     getAll,
     create,
     getById,
-    delelteById,
+    deleteById,
     update
 }

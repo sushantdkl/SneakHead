@@ -1,31 +1,30 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-/* Keep your original root-level font, smoothing and colors */
+/* Custom font imports and root styling */
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
-  color-scheme: light dark;
+  
+  color-scheme: dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #0A0A0A;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
+  /* Custom CSS Variables */
+  --primary-red: #DC2626;
+  --primary-black: #0A0A0A;
+  --gray-dark: #1A1A1A;
+  --gray-light: #2A2A2A;
 }
 
-/* Links */
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+/* Base styles */
+* {
+  box-sizing: border-box;
 }
 
 html, body, #root {
@@ -33,58 +32,252 @@ html, body, #root {
   padding: 0;
   height: 100%;
   width: 100%;
+  background-color: var(--primary-black);
+  color: white;
+  overflow-x: hidden;
 }
 
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
 
-/* Headings */
+/* Custom scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--gray-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-red);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #EF4444;
+}
+
+/* Links */
+a {
+  font-weight: 500;
+  color: var(--primary-red);
+  text-decoration: inherit;
+  transition: color 0.25s;
+}
+a:hover {
+  color: #EF4444;
+}
+
+/* Headings with custom fonts */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+  font-weight: 900;
 }
 
-/* Buttons */
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-/* Light mode */
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
-
-/* Optional background example */
-/*
-.bg {
-  background-image: url(../images/Sneakhead Background.jpg);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  min-height: 100vh;
-  margin: 0;
+/* Premium button styles */
+.btn-primary {
+  background-color: #dc2626;
   color: white;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+  transform-origin: center;
 }
-*/
+
+.btn-primary:hover {
+  background-color: #b91c1c;
+  transform: scale(1.05);
+}
+
+.btn-secondary {
+  border: 1px solid white;
+  color: white;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+  background-color: transparent;
+}
+
+.btn-secondary:hover {
+  background-color: white;
+  color: black;
+}
+
+.btn-glow {
+  background: linear-gradient(to right, #dc2626, #b91c1c);
+  color: white;
+  font-weight: 700;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
+  transition: all 0.3s ease;
+}
+
+.btn-glow:hover {
+  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.6);
+  transform: translateY(-2px);
+}
+
+/* Glass morphism effect */
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+}
+
+.glass-dark {
+  background: rgba(10, 10, 10, 0.8);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+}
+
+/* Custom animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(220, 38, 38, 0.8);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.6s ease-out;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s infinite;
+}
+
+/* Custom focus styles */
+.focus-red:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--primary-red);
+}
+
+/* Product card hover effects */
+.product-card {
+  transition: all 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Loading animations */
+.loading-dots::after {
+  content: '';
+  animation: loading-dots 1.5s infinite;
+}
+
+@keyframes loading-dots {
+  0%, 20% {
+    content: '.';
+  }
+  40% {
+    content: '..';
+  }
+  60%, 100% {
+    content: '...';
+  }
+}
+
+/* Utility classes for premium styling */
+.text-gradient {
+  background: linear-gradient(135deg, #DC2626, #EF4444);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.border-gradient {
+  border: 2px solid transparent;
+  background: linear-gradient(#0A0A0A, #0A0A0A) padding-box,
+              linear-gradient(135deg, #DC2626, #EF4444) border-box;
+}
+
+/* Mobile-first responsive adjustments */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2.5em;
+  }
+  
+  .btn-primary,
+  .btn-secondary {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* High-contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --primary-red: #FF0000;
+  }
+}
+
+/* Force black background for all select dropdowns */
+select {
+  background-color: #0A0A0A !important;
+  color: white !important;
+}
+
+select option {
+  background-color: #0A0A0A !important;
+  color: white !important;
+}
+
+/* Additional styling for select dropdowns */
+select:focus {
+  background-color: #0A0A0A !important;
+  color: white !important;
+}
+
+select option:hover,
+select option:focus,
+select option:active,
+select option:checked {
+  background-color: #1A1A1A !important;
+  color: white !important;
+}
