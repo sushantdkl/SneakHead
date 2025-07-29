@@ -2,6 +2,7 @@ import { User } from "../../models/index.js";
 import { generateToken } from "../../security/jwt-util.js";
 import bcrypt from 'bcrypt';
 
+// Authentication controller for user login and session management
 const login = async (req, res) => {
   try {
     //fetching all the data from users table
