@@ -1,11 +1,23 @@
 import { Product } from '../../models/index.js';
 import { Op } from 'sequelize';
 
+
 /**
- * Get all products with filtering and pagination
+ * Product Controller
+ * Handles all product-related operations including CRUD, search, and filtering
+ * Supports pagination, sorting, and advanced search functionality
+ */
+
+
+/**
+ * Get all products with advanced filtering, pagination, and search
+ * @param {Object} req - Express request object with query parameters
+ * @param {Object} res - Express response object
+ * @returns {Object} JSON response with products data and pagination info
  */
 const getAllProducts = async (req, res) => {
     try {
+        // Extract query parameters with default values
         const { 
             page = 1, 
             limit = 10, 
@@ -18,22 +30,25 @@ const getAllProducts = async (req, res) => {
             sortBy = 'createdAt',
             sortOrder = 'DESC',
             search,
-            q // Also support 'q' parameter for search
+            q // Also support 'q' parameter for search compatibility
         } = req.query;
 
+        // Calculate pagination offset
         const offset = (page - 1) * limit;
         const where = {};
 
-        // Apply filters
+        // Apply category and brand filters with case-insensitive matching
         if (category) where.category = { [Op.like]: `%${category}%` };
         if (brand) where.brand = { [Op.like]: `%${brand}%` };
+        
+        // Apply price range filters
         if (minPrice || maxPrice) {
             where.price = {};
             if (minPrice) where.price[Op.gte] = parseFloat(minPrice);
             if (maxPrice) where.price[Op.lte] = parseFloat(maxPrice);
         }
         
-        // Search functionality
+        // Advanced search functionality across multiple fields
         const searchQuery = search || q;
         if (searchQuery) {
             where[Op.or] = [
@@ -44,6 +59,7 @@ const getAllProducts = async (req, res) => {
             ];
         }
 
+        // Execute database query with filters, pagination, and sorting
         const products = await Product.findAndCountAll({
             where,
             limit: parseInt(limit),
@@ -51,6 +67,7 @@ const getAllProducts = async (req, res) => {
             order: [[sortBy, sortOrder]]
         });
 
+        // Send successful response with products and pagination metadata
         res.status(200).json({
             success: true,
             data: products.rows,
