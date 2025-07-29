@@ -231,6 +231,7 @@ const deleteProduct = async (req, res) => {
     try {
         const { id } = req.params;
         
+        // Find product to delete
         const product = await Product.findByPk(id);
         
         if (!product) {
