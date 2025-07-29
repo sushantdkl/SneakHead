@@ -2,6 +2,7 @@ import { User } from '../../models/index.js'
 import bcrypt from 'bcrypt';
 
 // User controller manages all user operations
+// Handles user CRUD operations with security
 /**
  * User Controller
  * Handles all user-related CRUD operations
