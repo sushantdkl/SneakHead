@@ -1,6 +1,7 @@
 import { Product } from '../../models/index.js';
 import { Op } from 'sequelize';
 
+// Main product controller for handling CRUD operations
 // Product controller handles all product CRUD operations
 /**
  * Product Controller
