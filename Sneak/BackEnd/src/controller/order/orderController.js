@@ -2,6 +2,7 @@ import { Order, OrderItem, Product, User } from '../../models/index.js'
 import { Op } from 'sequelize';
 
 // Order controller handles order processing and management
+// Manages order lifecycle from creation to completion
 /**
  * Create new order
  */
