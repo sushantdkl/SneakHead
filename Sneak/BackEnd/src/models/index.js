@@ -1,3 +1,4 @@
+// Database models and relationship configuration
 // Import models for relationship setup
 import { User } from "./user/User.js";
 import { Product } from "./product/Product.js";
