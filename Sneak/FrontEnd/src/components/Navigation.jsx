@@ -4,6 +4,7 @@ import { Search, ShoppingCart, User, Menu, X, LogOut, LogIn } from 'lucide-react
 import { useAuth } from '../contexts/AuthContext';
 import { cartService } from '../services/cartService';
 
+// Navigation component with responsive design and cart management
 
 /**
  * Navigation Component
