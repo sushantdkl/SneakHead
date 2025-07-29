@@ -262,6 +262,7 @@ const deleteProduct = async (req, res) => {
  */
 const getFeaturedProducts = async (req, res) => {
     try {
+        // Query only active and featured products
         const products = await Product.findAll({
             where: { 
                 isActive: true,
