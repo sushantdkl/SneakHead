@@ -1,3 +1,4 @@
+// Main App component - handles routing and layout
 // Main App component
 import React from "react";
 import { useLocation } from "react-router-dom";
