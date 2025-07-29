@@ -295,6 +295,7 @@ const updateStock = async (req, res) => {
         const { id } = req.params;
         const { stockQuantity } = req.body;
 
+        // Validate stock quantity input
         if (stockQuantity === undefined || stockQuantity < 0) {
             return res.status(400).json({
                 success: false,
