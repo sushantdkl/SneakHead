@@ -1,7 +1,7 @@
 import { Product } from '../../models/index.js';
 import { Op } from 'sequelize';
 
-
+// Product controller handles all product CRUD operations
 /**
  * Product Controller
  * Handles all product-related operations including CRUD, search, and filtering
