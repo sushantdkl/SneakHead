@@ -1,5 +1,6 @@
 import { Cart, CartItem, Product } from '../../models/index.js'
 
+// Shopping cart controller for cart management
 /**
  * Get user's cart
  */
