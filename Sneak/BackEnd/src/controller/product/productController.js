@@ -192,6 +192,7 @@ const updateProduct = async (req, res) => {
         const { id } = req.params;
         const updateData = req.body;
 
+        // Find existing product
         const product = await Product.findByPk(id);
         
         if (!product) {
