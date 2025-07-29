@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { Search, Filter, Star, ShoppingCart, Plus } from 'lucide-react';
 import { cartService } from '../services/cartService';
 
+// Men's category page with filtering and product listing
 const Men = () => {
   const { isLoggedIn, user } = useAuth();
   const navigate = useNavigate();
