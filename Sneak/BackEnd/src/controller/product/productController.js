@@ -144,7 +144,7 @@ const createProduct = async (req, res) => {
             isFeatured = false
         } = req.body;
 
-        // Validation
+        // Validation for required fields
         if (!name || !brand || !category || !price || !stockQuantity) {
             return res.status(400).json({
                 success: false,
