@@ -36,7 +36,7 @@ const getAllProducts = async (req, res) => {
 
         // Calculate pagination offset
         const offset = (page - 1) * limit;
-        const where = {};
+        const where = {}; // Initialize filter object
 
         // Apply category and brand filters with case-insensitive matching
         if (category) where.category = { [Op.like]: `%${category}%` };
@@ -97,6 +97,7 @@ const getProductById = async (req, res) => {
     try {
         const { id } = req.params;
         
+        // Find product by primary key
         const product = await Product.findByPk(id);
         
         if (!product) {
