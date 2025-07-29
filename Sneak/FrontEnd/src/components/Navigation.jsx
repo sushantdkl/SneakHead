@@ -4,7 +4,14 @@ import { Search, ShoppingCart, User, Menu, X, LogOut, LogIn } from 'lucide-react
 import { useAuth } from '../contexts/AuthContext';
 import { cartService } from '../services/cartService';
 
+
+/**
+ * Navigation Component
+ * Main navigation bar with search functionality, cart management, and user authentication
+ * Responsive design with mobile menu support
+ */
 const Navigation = () => {
+  // State management for navigation features
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
@@ -14,24 +21,34 @@ const Navigation = () => {
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
   
+  // Navigation and authentication hooks
   const navigate = useNavigate();
   const location = useLocation();
   const { isLoggedIn, user, logout } = useAuth();
 
-  // Fetch cart count when component mounts or user logs in
+  /**
+   * Fetch cart count when component mounts or user logs in
+   * Updates cart count in real-time for better UX
+   */
   useEffect(() => {
     const fetchCartCount = async () => {
       if (isLoggedIn && user?.id) {
         try {
           const token = localStorage.getItem('token');
           console.log('Fetching cart count for user:', user.id);
+          
+          // Get cart data from API
           const response = await cartService.getCart(user.id, token);
           const items = response.data?.CartItems || response.data?.items || response.items || [];
+          
+          // Calculate total quantity of items in cart
           const totalCount = items.reduce((sum, item) => sum + (item.quantity || 1), 0);
           console.log('Cart items:', items, 'Total count:', totalCount);
           setCartCount(totalCount);
         } catch (error) {
           console.error('Error fetching cart count:', error);
+          
+          // Handle token expiration
           if (error.message === 'TOKEN_EXPIRED') {
             // Token expired, logout user
             logout();
