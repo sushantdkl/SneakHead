@@ -72,12 +72,7 @@ const UserLayout = ({ children, title, subtitle }) => {
             <div className={`lg:w-80 ${isMobileMenuOpen ? 'block' : 'hidden lg:block'}`}>
               <div className="glass-dark border border-sneakhead-light-gray rounded-2xl p-6 sticky top-28">
                 {/* User Info */}
-                <div className="flex items-center space-x-4 mb-8 pb-6 border-b border-sneakhead-light-gray">
-                  <img
-                    src="https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=100"
-                    alt="User Avatar"
-                    className="w-12 h-12 rounded-full object-cover"
-                  />
+                <div className="mb-8 pb-6 border-b border-sneakhead-light-gray">
                   <div>
                     <h3 className="text-white font-bold font-grotesk">{user?.name || 'User'}</h3>
                     <p className="text-gray-400 text-sm">{user?.email || 'user@email.com'}</p>

@@ -121,7 +121,8 @@ const createProduct = async (req, res) => {
             features,
             specifications,
             stockQuantity,
-            isActive = true
+            isActive = true,
+            isFeatured = false
         } = req.body;
 
         // Validation
@@ -145,7 +146,8 @@ const createProduct = async (req, res) => {
             features: features || [],
             specifications: specifications || {},
             stockQuantity: parseInt(stockQuantity),
-            isActive
+            isActive,
+            isFeatured
         });
 
         res.status(201).json({

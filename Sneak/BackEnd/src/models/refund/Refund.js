@@ -9,19 +9,11 @@ const Refund = sequelize.define('Refund', {
   },
   orderId: {
     type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: 'Orders',
-      key: 'id'
-    }
+    allowNull: false
   },
   userId: {
     type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: 'Users',
-      key: 'id'
-    }
+    allowNull: false
   },
   customerName: {
     type: DataTypes.STRING,
@@ -45,11 +37,7 @@ const Refund = sequelize.define('Refund', {
   },
   productId: {
     type: DataTypes.INTEGER,
-    allowNull: true,
-    references: {
-      model: 'Products',
-      key: 'id'
-    }
+    allowNull: true
   },
   productName: {
     type: DataTypes.STRING,

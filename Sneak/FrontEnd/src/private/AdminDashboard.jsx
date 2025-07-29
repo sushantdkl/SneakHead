@@ -5,8 +5,6 @@ import {
   ShoppingBag, 
   Package, 
   RefreshCw,
-  TrendingUp,
-  TrendingDown,
   Eye,
   MoreHorizontal,
   Star,
@@ -122,10 +120,6 @@ const AdminDashboard = () => {
               <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                 <DollarSign className="w-6 h-6 text-white" />
               </div>
-              <div className="flex items-center text-sm font-medium text-green-400">
-                <TrendingUp className="w-4 h-4 mr-1" />
-                +12%
-              </div>
             </div>
             <h3 className="text-2xl font-bold text-white mb-1">${stats.totalRevenue.toLocaleString()}</h3>
             <p className="text-gray-400 text-sm">Total Revenue</p>
@@ -135,10 +129,6 @@ const AdminDashboard = () => {
             <div className="flex items-center justify-between mb-4">
               <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                 <ShoppingBag className="w-6 h-6 text-white" />
-              </div>
-              <div className="flex items-center text-sm font-medium text-blue-400">
-                <TrendingUp className="w-4 h-4 mr-1" />
-                +8%
               </div>
             </div>
             <h3 className="text-2xl font-bold text-white mb-1">{stats.totalOrders}</h3>
@@ -150,10 +140,6 @@ const AdminDashboard = () => {
               <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                 <Package className="w-6 h-6 text-white" />
               </div>
-              <div className="flex items-center text-sm font-medium text-purple-400">
-                <TrendingUp className="w-4 h-4 mr-1" />
-                +15%
-              </div>
             </div>
             <h3 className="text-2xl font-bold text-white mb-1">{stats.totalProducts}</h3>
             <p className="text-gray-400 text-sm">Total Products</p>
@@ -163,10 +149,6 @@ const AdminDashboard = () => {
             <div className="flex items-center justify-between mb-4">
               <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                 <Users className="w-6 h-6 text-white" />
-              </div>
-              <div className="flex items-center text-sm font-medium text-orange-400">
-                <TrendingUp className="w-4 h-4 mr-1" />
-                +5%
               </div>
             </div>
             <h3 className="text-2xl font-bold text-white mb-1">{stats.totalUsers}</h3>

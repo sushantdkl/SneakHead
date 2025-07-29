@@ -138,15 +138,6 @@ const MyOrders = () => {
       : 'Are you sure you want to request a refund for this entire order?';
 
     if (window.confirm(confirmMessage)) {
-      // For now, just show a success message
-      // In the future, this will submit to the backend refund API
-      alert(product 
-        ? `Refund request submitted for ${product.name}. Our team will review your request.`
-        : 'Refund request submitted for this order. Our team will review your request.'
-      );
-      
-      // TODO: When refund system is fully implemented, uncomment this code:
-      /*
       try {
         const token = localStorage.getItem('token');
         const refundData = {
@@ -173,14 +164,18 @@ const MyOrders = () => {
           body: JSON.stringify(refundData)
         });
 
-        if (!response.ok) {
+        if (response.ok) {
+          alert(product 
+            ? `Refund request submitted for ${product.name}. Our team will review your request.`
+            : 'Refund request submitted for this order. Our team will review your request.'
+          );
+        } else {
           throw new Error('Failed to submit refund request');
         }
       } catch (error) {
         console.error('Error submitting refund request:', error);
         alert('Failed to submit refund request. Please try again later.');
       }
-      */
     }
     // If user clicks "No" or cancels, they stay on the same page (no navigation)
   };

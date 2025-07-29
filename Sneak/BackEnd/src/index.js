@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import { db } from "./database/index.js"; 
-import { userRouter, authRouter, productRoutes, orderRoutes, cartRoutes } from "./route/index.js";
+import { userRouter, authRouter, productRoutes, orderRoutes, cartRoutes, refundRoutes } from "./route/index.js";
 import dotenv from "dotenv";
 import { authenticateToken } from "./middleware/token-middleware.js";
 import router from "./route/uploadRoutes.js";
@@ -40,6 +40,7 @@ app.use(authenticateToken);
 app.use("/api/file", router);
 app.use("/api/cart", cartRoutes); // Protected cart routes
 app.use("/api/orders", orderRoutes); // Protected order routes
+app.use("/api/refunds", refundRoutes); // Protected refund routes
 
 
 // Create uploads folder if it doesn't exist

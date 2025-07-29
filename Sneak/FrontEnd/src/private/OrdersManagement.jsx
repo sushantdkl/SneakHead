@@ -126,36 +126,7 @@ const OrdersManagement = () => {
     setShowOrderDetails(true);
   };
 
-  const handleRefundRequest = async (orderId) => {
-    if (!window.confirm('Are you sure you want to request a refund for this order?')) {
-      return;
-    }
 
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        setError('Authentication required');
-        return;
-      }
-
-      // Update order status to 'refunded' or create a refund request
-      await orderService.updateOrderStatus(orderId, { status: 'refunded' }, token);
-      fetchOrders(); // Refresh orders list
-      
-      // Show success message
-      alert('Refund request submitted successfully');
-    } catch (err) {
-      if (err.message === 'TOKEN_EXPIRED') {
-        // Token expired, logout user and redirect to login
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        window.location.href = '/login';
-        return;
-      }
-      setError('Failed to submit refund request');
-      console.error('Error submitting refund request:', err);
-    }
-  };
 
   const statusOptions = [
     { value: 'all', label: 'All Orders' },
@@ -387,15 +358,7 @@ const OrdersManagement = () => {
                                 Approve
                               </button>
                             )}
-                            {order.status === 'delivered' && (
-                              <button 
-                                onClick={() => handleRefundRequest(order.id)}
-                                className="px-3 py-1 bg-orange-500 hover:bg-orange-600 text-white rounded text-sm font-medium transition-colors"
-                                title="Request Refund"
-                              >
-                                Refund
-                              </button>
-                            )}
+
                             <select
                               value={order.status}
                               onChange={(e) => handleStatusUpdate(order.id, e.target.value)}

@@ -25,6 +25,7 @@ const AddEditProduct = () => {
     originalPrice: '',
     stock: '',
     isActive: true,
+    isFeatured: false,
     brand: '',
     availableSizes: [],
     availableColors: [],
@@ -45,10 +46,10 @@ const AddEditProduct = () => {
   ];
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: type === 'checkbox' ? checked : value
     }));
   };
 
@@ -147,7 +148,7 @@ const AddEditProduct = () => {
         price: parseFloat(formData.price),
         stockQuantity: parseInt(formData.stock), // Backend expects stockQuantity
         isActive: true, // Ensure product is active by default
-        isFeatured: formData.category === 'featured', // Set featured flag based on category
+        isFeatured: formData.isFeatured, // Use the checkbox value
         images: images.map(img => img.preview), // For now, using preview URLs
         availableSizes: formData.availableSizes.length > 0 ? formData.availableSizes : ['7', '8', '9', '10', '11', '12'],
         availableColors: formData.availableColors.length > 0 ? formData.availableColors : ['Black', 'White'],
@@ -161,7 +162,6 @@ const AddEditProduct = () => {
       
       // Create product
       const response = await productService.createProduct(productData, token);
-      console.log('Product creation response:', response); // Debug log
       
       if (response.success) {
         alert('Product created successfully!');
@@ -334,6 +334,24 @@ const AddEditProduct = () => {
                   className="w-full px-4 py-3 bg-sneakhead-gray border border-sneakhead-light-gray rounded-xl focus:border-sneakhead-red outline-none transition-colors text-white placeholder-gray-400"
                   required
                 />
+              </div>
+              
+              <div className="md:col-span-2">
+                <div className="flex items-center space-x-3">
+                  <input
+                    type="checkbox"
+                    name="isFeatured"
+                    checked={formData.isFeatured}
+                    onChange={handleInputChange}
+                    className="w-5 h-5 text-sneakhead-red bg-sneakhead-gray border-sneakhead-light-gray rounded focus:ring-sneakhead-red focus:ring-2"
+                  />
+                  <label className="text-gray-300 font-medium">
+                    Mark as Featured Product
+                  </label>
+                </div>
+                <p className="text-gray-400 text-sm mt-1 ml-8">
+                  Featured products will appear on the homepage
+                </p>
               </div>
               
 

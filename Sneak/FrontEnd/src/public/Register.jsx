@@ -5,6 +5,8 @@ import { useNavigate, Link } from "react-router-dom"
 import { userService } from '../services/userapi.js';
 import { Eye, EyeOff, CheckCircle, XCircle, PartyPopper } from 'lucide-react';
 
+
+
 const Register = () => {
   const navigate = useNavigate()
   const [formData, setFormData] = useState({
@@ -106,75 +108,119 @@ const Register = () => {
       )}
 
       {/* Background Image Section */}
-      <div
-        className="flex-1 relative bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: `url('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-vZ9yipEjUTraTCpAzpbPEnHNBuGBdC.png')`,
-        }}
-      >
-        {/* Overlay for better text readability */}
-        <div className="absolute inset-0 bg-black bg-opacity-30"></div>
+      <div className="flex-1 relative overflow-hidden">
+        {/* Background Image */}
+        <img 
+          src="/SneakheadBackground.jpg"
+          alt="SneakHead Background"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
 
-        {/* Logo */}
-        <div className="absolute top-6 right-6 z-10">
-          <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg">
-            <span className="text-orange-600 font-bold text-lg">SH</span>
-          </div>
+
+
+        {/* Main Heading - Center Left */}
+        <div className="absolute left-12 top-1/2 transform -translate-y-1/2 text-white z-10">
+          <h2 className="text-6xl md:text-7xl font-black text-white leading-tight" style={{textShadow: '3px 3px 6px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.5)'}}>
+            Join the
+          </h2>
+          <h2 className="text-4xl md:text-5xl font-black text-white mt-2 leading-tight" style={{textShadow: '3px 3px 6px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.5)'}}>
+            Sneaker
+          </h2>
+          <h2 className="text-4xl md:text-5xl font-black text-white leading-tight" style={{textShadow: '3px 3px 6px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.5)'}}>
+            Revolution
+          </h2>
         </div>
 
-        {/* Text Content */}
-        <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 text-center text-white z-10 px-4">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Join the Sneaker Community</h2>
-          <p className="text-lg md:text-xl mb-2">Start your journey with us and</p>
-          <p className="text-lg md:text-xl mb-4">find your perfect pair.</p>
-          <p className="text-sm text-gray-300">-SneakHead</p>
+        {/* Primary Quote - Top Right */}
+        <div className="absolute right-8 top-16 text-white z-10 text-right">
+          <p className="text-xl md:text-2xl font-bold text-white transform rotate-6" style={{textShadow: '2px 2px 4px rgba(0,0,0,0.9), 0 0 15px rgba(0,0,0,0.6)'}}>
+            "Where legends
+          </p>
+          <p className="text-xl md:text-2xl font-bold text-white transform rotate-6 -mr-4" style={{textShadow: '2px 2px 4px rgba(0,0,0,0.9), 0 0 15px rgba(0,0,0,0.6)'}}>
+            are made"
+          </p>
+        </div>
+
+        {/* Secondary Quote - Bottom Right */}
+        <div className="absolute right-8 bottom-32 text-white z-10 text-right">
+          <p className="text-xl md:text-2xl font-bold text-white transform -rotate-6" style={{textShadow: '2px 2px 4px rgba(0,0,0,0.9), 0 0 15px rgba(0,0,0,0.6)'}}>
+            "And dreams
+          </p>
+          <p className="text-xl md:text-2xl font-bold text-white transform -rotate-6 -mr-4" style={{textShadow: '2px 2px 4px rgba(0,0,0,0.9), 0 0 15px rgba(0,0,0,0.6)'}}>
+            come to life"
+          </p>
+        </div>
+
+        {/* Inspirational Quotes - Bottom Left */}
+        <div className="absolute bottom-32 left-8 text-white z-10">
+          <p className="text-sm text-gray-100 italic mb-2" style={{textShadow: '1px 1px 3px rgba(0,0,0,0.9), 0 0 10px rgba(0,0,0,0.7)'}}>
+            "Your journey to greatness starts with one step"
+          </p>
+          <p className="text-sm text-gray-100 italic" style={{textShadow: '1px 1px 3px rgba(0,0,0,0.9), 0 0 10px rgba(0,0,0,0.7)'}}>
+            "Be part of something bigger than just shoes"
+          </p>
+        </div>
+
+        {/* Signature - Bottom Center */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center text-white z-10">
+          <div className="flex items-center justify-center space-x-3">
+            <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+            <p className="text-lg text-white font-bold" style={{textShadow: '2px 2px 4px rgba(0,0,0,0.9), 0 0 15px rgba(0,0,0,0.6)'}}>-SneakHead</p>
+            <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+          </div>
         </div>
       </div>
 
       {/* Registration Form Section */}
-      <div className="w-full max-w-md bg-white flex items-center justify-center p-8">
-        <div className="w-full max-w-sm">
-          <h1 className="text-2xl font-bold text-gray-800 mb-8 text-center">Sign Up</h1>
+      <div className="w-full max-w-md flex items-center justify-center p-8">
+        <div className="w-full max-w-sm bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-white/20">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">Join SneakHead</h1>
+            <p className="text-gray-600 text-sm">Create your account and start your sneaker journey</p>
+          </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* First Name */}
-            <div>
-              <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
-                First Name
-              </label>
-              <input
-                type="text"
-                id="firstName"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleInputChange}
-                required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors text-black"
-                placeholder="Enter your first name"
-              />
-            </div>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Name Fields Row */}
+            <div className="grid grid-cols-2 gap-4">
+              {/* First Name */}
+              <div>
+                <label htmlFor="firstName" className="block text-sm font-semibold text-gray-700 mb-2">
+                  First Name
+                </label>
+                <input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all duration-300 text-gray-800 bg-white/80 backdrop-blur-sm"
+                  placeholder="First name"
+                />
+              </div>
 
-            {/* Last Name */}
-            <div>
-              <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
-                Last Name
-              </label>
-              <input
-                type="text"
-                id="lastName"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleInputChange}
-                required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors text-black"
-                placeholder="Enter your last name"
-              />
+              {/* Last Name */}
+              <div>
+                <label htmlFor="lastName" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all duration-300 text-gray-800 bg-white/80 backdrop-blur-sm"
+                  placeholder="Last name"
+                />
+              </div>
             </div>
 
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                Email
+              <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+                Email Address
               </label>
               <input
                 type="email"
@@ -183,14 +229,14 @@ const Register = () => {
                 value={formData.email}
                 onChange={handleInputChange}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors text-black"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all duration-300 text-gray-800 bg-white/80 backdrop-blur-sm"
                 placeholder="Enter your email"
               />
             </div>
 
             {/* Password */}
             <div className="relative">
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
                 Password
               </label>
               <div className="relative">
@@ -201,13 +247,13 @@ const Register = () => {
                   value={formData.password}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-2 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors text-black"
+                  className="w-full px-4 py-3 pr-12 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all duration-300 text-gray-800 bg-white/80 backdrop-blur-sm"
                   placeholder="Create a password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((prev) => !prev)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-500 focus:outline-none transition-colors"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-500 focus:outline-none transition-colors"
                   tabIndex={-1}
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -217,7 +263,7 @@ const Register = () => {
 
             {/* Confirm Password */}
             <div className="relative">
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="confirmPassword" className="block text-sm font-semibold text-gray-700 mb-2">
                 Confirm Password
               </label>
               <div className="relative">
@@ -228,13 +274,13 @@ const Register = () => {
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-2 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors text-black"
+                  className="w-full px-4 py-3 pr-12 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all duration-300 text-gray-800 bg-white/80 backdrop-blur-sm"
                   placeholder="Confirm your password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword((prev) => !prev)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-500 focus:outline-none transition-colors"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-500 focus:outline-none transition-colors"
                   tabIndex={-1}
                 >
                   {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -244,23 +290,32 @@ const Register = () => {
 
             {/* Error Message */}
             {error && (
-              <div className="mb-4 text-red-600 text-center animate-pulse-glow">{error}</div>
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-center text-sm animate-pulse">
+                {error}
+              </div>
             )}
 
             {/* Sign Up Button */}
             <button
               type="submit"
-              className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 mt-6"
+              className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
               disabled={loading}
             >
-              {loading ? 'Creating Account...' : 'Sign Up'}
+              {loading ? (
+                <div className="flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                  Creating Account...
+                </div>
+              ) : (
+                'Create Account'
+              )}
             </button>
 
             {/* Sign In Link */}
-            <div className="text-center pt-4 border-t border-gray-200">
+            <div className="text-center pt-6 border-t border-gray-200">
               <p className="text-sm text-gray-600">
                 Already have an account?{" "}
-                <Link to="/login" className="text-red-600 hover:text-red-700 font-medium transition-colors">
+                <Link to="/login" className="text-red-600 hover:text-red-700 font-bold transition-colors">
                   Sign in
                 </Link>
               </p>

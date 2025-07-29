@@ -174,7 +174,8 @@ const ProductManagement = () => {
         price: parseFloat(formData.price),
         stockQuantity: parseInt(formData.stock), // Backend expects stockQuantity
         images: images.map(img => img.preview), // Use already compressed images
-        isActive: true
+        isActive: true,
+        isFeatured: formData.featured // Map featured to isFeatured for backend
       };
 
       await productService.updateProduct(selectedProduct.id, productData, token);

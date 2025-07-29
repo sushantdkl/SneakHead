@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Star, Heart, ArrowRight, ChevronLeft, ChevronRight, Play, ShoppingCart, Zap } from "lucide-react";
 import { useAuth } from '../contexts/AuthContext';
 import { productService } from "../services/productService";
+import { cartService } from "../services/cartService";
 
 const Homepage = () => {
   const { isLoggedIn, user } = useAuth();
@@ -10,6 +11,7 @@ const Homepage = () => {
   const [products, setProducts] = useState([]);
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [addingToCart, setAddingToCart] = useState({});
 
 
 
@@ -18,14 +20,18 @@ const Homepage = () => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
+        
         // Fetch general products and featured products
         const [productsData, featuredData] = await Promise.all([
           productService.getAllProducts({ limit: 8 }),
           productService.getFeaturedProducts()
         ]);
         
-        setProducts(productsData.data || productsData.products || productsData || []);
-        setFeaturedProducts(featuredData.data || featuredData.products || featuredData || []);
+        const products = productsData.data || productsData.products || productsData || [];
+        const featured = featuredData.data || featuredData.products || featuredData || [];
+        
+        setProducts(products);
+        setFeaturedProducts(featured);
       } catch (error) {
         console.error('Error fetching products:', error);
         // Fallback to mock data if backend fails
@@ -38,6 +44,45 @@ const Homepage = () => {
 
     fetchProducts();
   }, []);
+
+  // Handle add to cart
+  const handleAddToCart = async (product) => {
+    if (!isLoggedIn) {
+      alert('Please login to add items to cart');
+      return;
+    }
+
+    try {
+      setAddingToCart(prev => ({ ...prev, [product.id]: true }));
+      
+      const token = localStorage.getItem('token');
+      const userData = JSON.parse(localStorage.getItem('user') || '{}');
+      
+      await cartService.addToCart(userData.id, {
+        productId: product.id,
+        quantity: 1,
+        size: product.availableSizes?.[0] || '9', // Default to first available size
+        color: product.availableColors?.[0] || 'Black' // Default to first available color
+      }, token);
+      
+      alert('Product added to cart successfully!');
+      
+      // Dispatch cart update event to update navigation cart count
+      window.dispatchEvent(new Event('cartUpdated'));
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      if (error.message === 'TOKEN_EXPIRED') {
+        // Token expired, logout user and redirect to login
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = '/login';
+        return;
+      }
+      alert('Failed to add product to cart. Please try again.');
+    } finally {
+      setAddingToCart(prev => ({ ...prev, [product.id]: false }));
+    }
+  };
 
   // Mock data as fallback
   const mockProducts = [
@@ -270,9 +315,9 @@ const Homepage = () => {
           <div className="flex justify-between items-center mb-12">
             <div>
               <h2 className="text-4xl md:text-5xl font-black font-grotesk mb-4">
-                Best <span className="text-gradient">Sellers</span>
+                Featured <span className="text-gradient">Products</span>
               </h2>
-              <p className="text-gray-400 text-lg">The most coveted kicks in our collection</p>
+              <p className="text-gray-400 text-lg">Handpicked favorites from our collection</p>
             </div>
             <Link to="/products" className="group flex items-center text-sneakhead-red hover:text-sneakhead-red-light transition-colors font-semibold">
               View All
@@ -305,13 +350,18 @@ const Homepage = () => {
                 >
                   <div className="relative overflow-hidden">
                     <img
-                      src={product.image || product.imageUrl || "https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg?auto=compress&cs=tinysrgb&w=400"}
+                      src={product.images?.[0] || '/src/images/default-product.jpg'}
                       alt={product.name}
                       className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-700"
                     />
                     
                     {/* Badges */}
                     <div className="absolute top-4 left-4 flex flex-col gap-2">
+                      {product.isFeatured && (
+                        <span className="bg-gradient-to-r from-purple-500 to-purple-700 text-white px-2 py-1 text-xs font-bold rounded-md">
+                          FEATURED
+                        </span>
+                      )}
                       {product.isNew && (
                         <span className="bg-sneakhead-red text-white px-2 py-1 text-xs font-bold rounded-md">
                           NEW
@@ -334,8 +384,21 @@ const Homepage = () => {
                       <button className="p-2 bg-black/50 hover:bg-sneakhead-red rounded-full transition-colors">
                         <Heart className="w-4 h-4 text-white" />
                       </button>
-                      <button className="p-2 bg-black/50 hover:bg-sneakhead-red rounded-full transition-colors">
-                        <ShoppingCart className="w-4 h-4 text-white" />
+                      <button 
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleAddToCart(product);
+                        }}
+                        disabled={addingToCart[product.id]}
+                        className="p-2 bg-sneakhead-red hover:bg-sneakhead-red-light rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                        title="Add to Cart"
+                      >
+                        {addingToCart[product.id] ? (
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        ) : (
+                          <ShoppingCart className="w-4 h-4 text-white" />
+                        )}
                       </button>
                     </div>
                   </div>
@@ -343,11 +406,6 @@ const Homepage = () => {
                   <div className="p-6">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-sm text-gray-400 font-medium">{product.category}</span>
-                      <div className="flex items-center">
-                        <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                        <span className="text-sm text-gray-400 ml-1">{product.rating}</span>
-                        <span className="text-xs text-gray-500 ml-1">({product.reviews})</span>
-                      </div>
                     </div>
                     
                     <h3 className="text-lg font-bold text-white mb-2 group-hover:text-sneakhead-red transition-colors">
@@ -356,7 +414,7 @@ const Homepage = () => {
                     
                     <p className="text-gray-400 text-sm mb-3">{product.brand}</p>
                     
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center space-x-2">
                         <span className="text-xl font-bold text-sneakhead-red">${product.price}</span>
                         {product.originalPrice && (
@@ -365,6 +423,29 @@ const Homepage = () => {
                       </div>
                       <Zap className="w-4 h-4 text-yellow-400" />
                     </div>
+                    
+                    {/* Add to Cart Button */}
+                    <button 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleAddToCart(product);
+                      }}
+                      disabled={addingToCart[product.id]}
+                      className="w-full bg-sneakhead-red hover:bg-sneakhead-red-light text-white py-2 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 font-semibold"
+                    >
+                      {addingToCart[product.id] ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                          <span>Adding...</span>
+                        </>
+                      ) : (
+                        <>
+                          <ShoppingCart className="w-4 h-4" />
+                          <span>Add to Cart</span>
+                        </>
+                      )}
+                    </button>
                   </div>
                 </Link>
               ))

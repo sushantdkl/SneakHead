@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Heart, 
-  Share2, 
-  Star, 
   Plus, 
   Minus, 
   ShoppingCart, 
@@ -13,11 +10,9 @@ import {
   ChevronRight,
   ChevronDown,
   ChevronUp,
-  Zap,
-  Award,
-  MessageCircle
+  Zap
 } from 'lucide-react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { productService } from '../services/productService';
 import { cartService } from '../services/cartService';
 import LoginPopup from '../components/LoginPopup';
@@ -25,18 +20,18 @@ import { getSafeImageUrl, handleImageError } from '../utils/imageUtils';
 
 const ProductDescription = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
   const [quantity, setQuantity] = useState(1);
-  const [isWishlisted, setIsWishlisted] = useState(false);
   const [activeTab, setActiveTab] = useState('description');
   const [expandedFeatures, setExpandedFeatures] = useState({});
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [addingToCart, setAddingToCart] = useState(false);
   const [showLoginPopup, setShowLoginPopup] = useState(false);
+  const [addingToCart, setAddingToCart] = useState(false);
 
   // Fetch product data
   useEffect(() => {
@@ -68,45 +63,56 @@ const ProductDescription = () => {
     setQuantity(prev => Math.max(1, prev + change));
   };
 
-  const handleAddToCart = async () => {
-    if (!selectedSize) {
-      alert('Please select a size');
+  const handleProceedToCheckout = async () => {
+    console.log('Button clicked!');
+    console.log('Selected size:', selectedSize);
+    
+    const token = localStorage.getItem('token');
+    console.log('Token exists:', !!token);
+    
+    if (!token) {
+      setShowLoginPopup(true);
+      return;
+    }
+
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    console.log('User exists:', !!user);
+    
+    if (!user) {
+      setShowLoginPopup(true);
       return;
     }
 
     try {
       setAddingToCart(true);
-      const token = localStorage.getItem('token');
+      console.log('Adding product to cart...');
+      console.log('Product ID:', product.id);
+      console.log('Quantity:', quantity);
+      console.log('Size:', selectedSize);
+      console.log('Color:', selectedColor);
       
-      if (!token) {
-        setShowLoginPopup(true);
-        return;
-      }
-
-      const user = JSON.parse(localStorage.getItem('user') || 'null');
-      if (!user) {
-        setShowLoginPopup(true);
-        return;
-      }
-      
+      // Add product to cart first
       await cartService.addToCart(user.id, {
         productId: product.id,
-        quantity,
-        size: selectedSize,
-        color: selectedColor
+        quantity: quantity,
+        size: selectedSize || 'Default',
+        color: selectedColor || 'Default'
       }, token);
 
-      alert('Product added to cart successfully!');
+      console.log('Product added to cart successfully!');
+      console.log('Navigating to checkout...');
+      
+      // Navigate to checkout page after adding to cart
+      navigate('/checkout');
     } catch (error) {
-      console.error('Error adding to cart:', error);
+      console.error('Error adding product to cart:', error);
       if (error.message === 'TOKEN_EXPIRED') {
-        // Token expired, logout user and redirect to login
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         window.location.href = '/login';
         return;
       }
-      alert('Failed to add product to cart');
+      alert('Failed to add product to cart. Please try again.');
     } finally {
       setAddingToCart(false);
     }
@@ -122,8 +128,7 @@ const ProductDescription = () => {
   const tabs = [
     { id: 'description', label: 'Description' },
     { id: 'specifications', label: 'Specifications' },
-    { id: 'delivery', label: 'Delivery & Returns' },
-    { id: 'reviews', label: `Reviews` }
+    { id: 'delivery', label: 'Delivery & Returns' }
   ];
 
   // Mock suggested products for now
@@ -154,33 +159,7 @@ const ProductDescription = () => {
     }
   ];
 
-  // Mock reviews for now
-  const reviews = [
-    {
-      id: 1,
-      user: 'Marcus J.',
-      rating: 5,
-      date: '2024-01-15',
-      comment: 'Absolutely love these! Quality is top-notch and they fit perfectly. The Chicago colorway is iconic.',
-      verified: true
-    },
-    {
-      id: 2,
-      user: 'Sarah C.',
-      rating: 4,
-      date: '2024-01-10',
-      comment: 'Great sneakers, though they run a bit small. Would recommend going half a size up.',
-      verified: true
-    },
-    {
-      id: 3,
-      user: 'Jordan W.',
-      rating: 5,
-      date: '2024-01-08',
-      comment: 'Classic design, premium materials. These are a must-have for any sneaker collection.',
-      verified: false
-    }
-  ];
+
 
   if (loading) {
     return (
@@ -297,22 +276,7 @@ const ProductDescription = () => {
                   </>
                 )}
 
-                {/* Wishlist & Share */}
-                <div className="absolute top-4 right-4 flex space-x-2">
-                  <button
-                    onClick={() => setIsWishlisted(!isWishlisted)}
-                    className={`p-3 backdrop-blur-sm rounded-full transition-colors ${
-                      isWishlisted 
-                        ? 'bg-sneakhead-red text-white' 
-                        : 'bg-black/50 text-white hover:bg-sneakhead-red/80'
-                    }`}
-                  >
-                    <Heart className={`w-5 h-5 ${isWishlisted ? 'fill-current' : ''}`} />
-                  </button>
-                  <button className="p-3 bg-black/50 backdrop-blur-sm rounded-full text-white hover:bg-sneakhead-red/80 transition-colors">
-                    <Share2 className="w-5 h-5" />
-                  </button>
-                </div>
+
               </div>
 
               {/* Thumbnail Images */}
@@ -382,40 +346,28 @@ const ProductDescription = () => {
             </div>
 
             {/* Product Details */}
-            <div className="space-y-6">
+            <div className="space-y-8">
               {/* Product Header */}
-              <div>
-                <p className="text-gray-400 text-sm mb-2">{product.brand || 'Brand'}</p>
-                <h1 className="text-3xl lg:text-4xl font-bold text-white font-grotesk mb-2">{product.name}</h1>
-                <p className="text-gray-300 text-lg">{product.subtitle || product.category}</p>
-                
-                {/* Rating */}
-                <div className="flex items-center space-x-3 mt-4">
-                  <div className="flex items-center">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`w-5 h-5 ${
-                          i < Math.floor(product.rating || 0)
-                            ? 'text-yellow-400 fill-current'
-                            : 'text-gray-600'
-                        }`}
-                      />
-                    ))}
-                  </div>
-                  <span className="text-white font-medium">{product.rating || 'No rating'}</span>
-                  <span className="text-gray-400">({product.reviewCount || reviews.length} reviews)</span>
+              <div className="space-y-4">
+                <div>
+                  <p className="text-gray-400 text-sm mb-2">{product.brand || 'Brand'}</p>
+                  <h1 className="text-3xl lg:text-4xl font-bold text-white font-grotesk mb-3">{product.name}</h1>
+                  <p className="text-gray-300 text-lg">{product.subtitle || product.category}</p>
                 </div>
+                
+
               </div>
 
               {/* Price */}
-              <div className="flex items-center space-x-4">
-                <span className="text-3xl font-bold text-sneakhead-red">${Number(product.price || 0).toFixed(2)}</span>
+              <div className="space-y-2">
+                <div className="flex items-center space-x-4">
+                  <span className="text-3xl font-bold text-sneakhead-red">${Number(product.price || 0).toFixed(2)}</span>
+                  {product.originalPrice && product.originalPrice > product.price && (
+                    <span className="text-xl text-gray-500 line-through">${Number(product.originalPrice).toFixed(2)}</span>
+                  )}
+                </div>
                 {product.originalPrice && product.originalPrice > product.price && (
-                  <span className="text-xl text-gray-500 line-through">${Number(product.originalPrice).toFixed(2)}</span>
-                )}
-                {product.originalPrice && product.originalPrice > product.price && (
-                  <span className="px-3 py-1 bg-green-500/20 text-green-400 text-sm font-medium rounded-full">
+                  <span className="inline-block px-3 py-1 bg-green-500/20 text-green-400 text-sm font-medium rounded-full">
                     Save ${(Number(product.originalPrice) - Number(product.price)).toFixed(2)}
                   </span>
                 )}
@@ -423,9 +375,9 @@ const ProductDescription = () => {
 
               {/* Color Selection */}
               {product.colors && product.colors.length > 0 && (
-                <div>
-                  <h3 className="text-white font-semibold mb-3">Color: {selectedColor || 'Select a color'}</h3>
-                  <div className="flex space-x-3">
+                <div className="space-y-3">
+                  <h3 className="text-white font-semibold">Color: {selectedColor || 'Select a color'}</h3>
+                  <div className="flex flex-wrap gap-3">
                     {product.colors.map((colorOption, index) => (
                       <button
                         key={index}
@@ -454,8 +406,8 @@ const ProductDescription = () => {
 
               {/* Size Selection */}
               {product.sizes && product.sizes.length > 0 && (
-                <div>
-                  <h3 className="text-white font-semibold mb-3">Size: {selectedSize || 'Select a size'}</h3>
+                <div className="space-y-3">
+                  <h3 className="text-white font-semibold">Size: {selectedSize || 'Select a size'}</h3>
                   <div className="grid grid-cols-4 gap-3">
                     {product.sizes.map((sizeOption, index) => (
                       <button
@@ -478,9 +430,9 @@ const ProductDescription = () => {
               )}
 
               {/* Quantity */}
-              <div>
-                <h3 className="text-white font-semibold mb-3">Quantity</h3>
-                <div className="flex items-center space-x-4">
+              <div className="space-y-3">
+                <h3 className="text-white font-semibold">Quantity</h3>
+                <div className="flex items-center">
                   <div className="flex items-center border border-sneakhead-light-gray rounded-xl">
                     <button
                       onClick={() => handleQuantityChange(-1)}
@@ -499,15 +451,26 @@ const ProductDescription = () => {
                 </div>
               </div>
 
-              {/* Add to Cart */}
-              <div className="space-y-4">
+              {/* Proceed to Checkout */}
+              <div className="space-y-6">
                 <button
-                  onClick={handleAddToCart}
-                  disabled={addingToCart || !selectedSize}
-                  className="w-full btn-glow py-4 text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={() => {
+                    console.log('=== BUTTON CLICKED ===');
+                    console.log('Button element clicked!');
+                    console.log('Selected size:', selectedSize);
+                    handleProceedToCheckout();
+                  }}
+                  disabled={addingToCart}
+                  className="w-full py-4 px-6 rounded-xl text-lg font-bold transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{ 
+                    backgroundColor: '#ff0000', 
+                    color: '#ffffff', 
+                    textShadow: '0 0 10px rgba(255,255,255,0.8)',
+                    zIndex: 9999, 
+                    position: 'relative' 
+                  }}
                 >
-                  <ShoppingCart className="w-5 h-5 mr-3" />
-                  {addingToCart ? 'Adding to Cart...' : 'Add to Cart'}
+                  {addingToCart ? 'Adding to Cart...' : 'Proceed to Checkout'}
                 </button>
                 
                 <div className="grid grid-cols-3 gap-3 text-center">
@@ -536,11 +499,11 @@ const ProductDescription = () => {
                     <Zap className="w-5 h-5 text-sneakhead-red mr-2" />
                     Key Features
                   </h3>
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     {product.features.map((feature, index) => (
                       <div
                         key={index}
-                        className="flex items-center justify-between p-2 hover:bg-sneakhead-gray rounded-lg transition-colors cursor-pointer"
+                        className="flex items-center justify-between p-3 hover:bg-sneakhead-gray rounded-lg transition-colors cursor-pointer"
                         onClick={() => toggleFeature(index)}
                       >
                         <span className="text-gray-300">{feature}</span>
@@ -652,46 +615,7 @@ const ProductDescription = () => {
                   </div>
                 )}
 
-                {activeTab === 'reviews' && (
-                  <div className="space-y-6">
-                    {reviews.map((review) => (
-                      <div key={review.id} className="p-6 bg-sneakhead-gray rounded-xl">
-                        <div className="flex items-center justify-between mb-4">
-                          <div className="flex items-center space-x-3">
-                            <span className="text-white font-medium">{review.user}</span>
-                            {review.verified && (
-                              <span className="inline-flex items-center px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded-full">
-                                <Award className="w-3 h-3 mr-1" />
-                                Verified
-                              </span>
-                            )}
-                          </div>
-                          <span className="text-gray-400 text-sm">{new Date(review.date).toLocaleDateString()}</span>
-                        </div>
-                        
-                        <div className="flex items-center mb-3">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className={`w-4 h-4 ${
-                                i < review.rating
-                                  ? 'text-yellow-400 fill-current'
-                                  : 'text-gray-600'
-                              }`}
-                            />
-                          ))}
-                        </div>
-                        
-                        <p className="text-gray-300">{review.comment}</p>
-                      </div>
-                    ))}
-                    
-                    <button className="w-full flex items-center justify-center px-6 py-3 border border-sneakhead-light-gray text-gray-400 hover:text-white hover:border-gray-400 rounded-xl transition-colors">
-                      <MessageCircle className="w-4 h-4 mr-2" />
-                      Write a Review
-                    </button>
-                  </div>
-                )}
+
               </div>
             </div>
           </div>

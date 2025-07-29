@@ -29,11 +29,7 @@ const RefundRequestPage = () => {
       setLoading(true);
       setError("");
       try {
-        // For now, show empty state since refund system is not fully implemented
-        setRefundRequests([]);
-        
-        // TODO: When refund system is fully implemented, uncomment this code:
-        /*
+        // Fetch actual refund data from backend
         const token = localStorage.getItem('token');
         if (!token) {
           setError('Authentication required');
@@ -53,10 +49,13 @@ const RefundRequestPage = () => {
         } else {
           throw new Error('Failed to fetch refund requests');
         }
-        */
       } catch (err) {
-        setError('Failed to fetch refund requests');
         console.error('Error fetching refunds:', err);
+        if (err.message === 'Failed to fetch') {
+          setError('Backend server is not running. Please start the backend server first.');
+        } else {
+          setError('Failed to fetch refund requests. Please try again.');
+        }
       } finally {
         setLoading(false);
       }
@@ -124,7 +123,7 @@ const RefundRequestPage = () => {
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-          status: selectedAction,
+          status: selectedAction === 'approve' ? 'approved' : 'rejected',
           adminNotes: `Admin ${selectedAction} this refund request`
         })
       });
@@ -225,7 +224,7 @@ const RefundRequestPage = () => {
                       <p className="text-gray-400 text-sm">Order: {refund.orderId}</p>
                       <div className="flex items-center text-gray-400 text-sm mt-1">
                         <Calendar className="w-4 h-4 mr-1" />
-                        {new Date(refund.requestDate).toLocaleDateString()}
+                        {refund.requestDate ? new Date(refund.requestDate).toLocaleDateString() : 'N/A'}
                       </div>
                     </div>
                     <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${statusConfig.color}`}>
@@ -264,11 +263,15 @@ const RefundRequestPage = () => {
                         </div>
                         <div className="flex items-center text-sneakhead-red font-semibold">
                           <DollarSign className="w-4 h-4 mr-1" />
-                          ${parseFloat(refund.refundAmount).toFixed(2)}
+                          ${typeof refund.refundAmount === 'number' 
+                            ? refund.refundAmount.toFixed(2) 
+                            : parseFloat(refund.refundAmount || 0).toFixed(2)}
                         </div>
                       </div>
                       <div className="text-gray-400 text-sm mt-1">
-                        Order Total: ${parseFloat(refund.orderTotal).toFixed(2)}
+                        Order Total: ${typeof refund.orderTotal === 'number' 
+                          ? refund.orderTotal.toFixed(2) 
+                          : parseFloat(refund.orderTotal || 0).toFixed(2)}
                       </div>
                     </div>
                   </div>
@@ -291,7 +294,7 @@ const RefundRequestPage = () => {
                     <div className="mb-6 p-4 bg-sneakhead-gray rounded-xl">
                       <h5 className="text-white font-medium mb-2">Resolution</h5>
                       <div className="text-gray-400 text-sm">
-                        <p>Resolved on: {new Date(refund.resolvedDate).toLocaleDateString()}</p>
+                        <p>Resolved on: {refund.resolvedDate ? new Date(refund.resolvedDate).toLocaleDateString() : 'N/A'}</p>
                         {refund.rejectionReason && (
                           <p className="mt-2">Reason: {refund.rejectionReason}</p>
                         )}
@@ -351,7 +354,9 @@ const RefundRequestPage = () => {
                     Are you sure you want to {selectedAction} refund request {selectedRefund.id}?
                     {selectedAction === 'approve' && (
                       <span className="block mt-2 text-sm">
-                        Amount: ${selectedRefund.amount.toFixed(2)}
+                        Amount: ${typeof selectedRefund.refundAmount === 'number' 
+                          ? selectedRefund.refundAmount.toFixed(2) 
+                          : parseFloat(selectedRefund.refundAmount || 0).toFixed(2)}
                       </span>
                     )}
                   </p>
