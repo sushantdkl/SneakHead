@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { productService } from "../services/productService";
 import { cartService } from "../services/cartService";
 
+// Homepage component with hero section and product showcase
 const Homepage = () => {
   const { isLoggedIn, user } = useAuth();
   const [currentReview, setCurrentReview] = useState(0);
