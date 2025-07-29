@@ -1,12 +1,23 @@
 import { User } from '../../models/index.js'
 import bcrypt from 'bcrypt';
 
+
 /**
- *  fetch all users
+ * User Controller
+ * Handles all user-related CRUD operations
+ * Includes authentication and authorization checks
+ */
+
+
+/**
+ * Fetch all users from database
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} JSON response with users data
  */
 const getAll = async (req, res) => {
     try {
-        // Check if user is admin
+        // Check if user is admin - security validation
         if (!req.user || (!req.user.role || req.user.role !== 'admin') && !req.user.isAdmin) {
             return res.status(403).json({
                 success: false,
@@ -14,10 +25,16 @@ const getAll = async (req, res) => {
             });
         }
         
-        //fetching all the data from users table
+        // Fetching all the data from users table
         const users = await User.findAll();
-        res.status(200).send({ data: users, message: "successfully fetched data" })
+        
+        // Send successful response with users data
+        res.status(200).send({ 
+            data: users, 
+            message: "successfully fetched data" 
+        });
     } catch (e) {
+        // Handle database or server errors
         res.status(500).json({ error: 'Failed to fetch users' });
     }
 }
