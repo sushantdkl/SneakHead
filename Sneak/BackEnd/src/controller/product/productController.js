@@ -21,7 +21,7 @@ const getAllProducts = async (req, res) => {
         // Extract query parameters with default values
         const { 
             page = 1, 
-            limit = 10, 
+            limit = 10,  // Default page size
             category, 
             brand, 
             minPrice, 
